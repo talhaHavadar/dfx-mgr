@@ -30,7 +30,7 @@
 void *jobScheduler_Task(void* carg){
 	//INFO("\n");
 	//
-	JobScheduler_t *scheduler = (JobScheduler_t *)carg; 
+	JobScheduler_t *scheduler = (JobScheduler_t *)carg;
 	Element_t *graphList = NULL;
 	AbstractGraph_t *graph = NULL;
 	queue_t *commandQueue = scheduler->CommandQueue;
@@ -86,7 +86,7 @@ void *jobScheduler_Task(void* carg){
 					if (graph != NULL){
 						switch (graph->state){
 							case AGRAPH_SCHEDULED:
-								if(currentGraph != NULL){ 
+								if(currentGraph != NULL){
 									break;
 								}
 								currentGraph = acapGraphInit();
@@ -94,7 +94,7 @@ void *jobScheduler_Task(void* carg){
 								Element_t* accelElement = graph->accelNodeHead;
 								while(accelElement != NULL){
 									AbstractAccelNode_t *abstractAccel =
-										(AbstractAccelNode_t *) accelElement->node;	
+										(AbstractAccelNode_t *) accelElement->node;
 									//INFO("%d\n", abstractAccel->id);
 									switch(abstractAccel->type){
 										case HW_NODE:
@@ -126,21 +126,21 @@ void *jobScheduler_Task(void* carg){
 											//printMeta(metadata);
 											abstractAccel->node = acapAddAccelNode(currentGraph,
 													abstractAccel->name, metadata->DMA_type,
-													fallback, 
-													metadata->interRM.compatible, 0);//, 
-											//metadata->Input_Channel_Count, 
+													fallback,
+													metadata->interRM.compatible, 0);//,
+											//metadata->Input_Channel_Count,
 											//metadata->Output_Channel_Count);
 											//INFO("#####################\n");
 											break;
 										case IN_NODE:
 											abstractAccel->node = acapAddInputNode(currentGraph,
 													abstractAccel->ptr, abstractAccel->size,
-													0, abstractAccel->semptr); //SchedulerBypassFlag); 
+													0, abstractAccel->semptr); //SchedulerBypassFlag);
 											break;
-										case OUT_NODE: 
+										case OUT_NODE:
 											abstractAccel->node = acapAddOutputNode(currentGraph,
 													abstractAccel->ptr, abstractAccel->size,
-													0, abstractAccel->semptr); //SchedulerBypassFlag); 
+													0, abstractAccel->semptr); //SchedulerBypassFlag);
 											//abstractAccel->node->accel.semptr = abstractAccel->semptr;
 											break;
 
@@ -151,35 +151,35 @@ void *jobScheduler_Task(void* carg){
 								while(buffElement != NULL){
 									//INFO("%p", buffElement->node);
 									AbstractBuffNode_t *abstractBuff =
-										(AbstractBuffNode_t *) buffElement->node;	
+										(AbstractBuffNode_t *) buffElement->node;
 									//INFO("%p %d %s %d\n", currentGraph, abstractBuff->size, abstractBuff->name,
 									//	abstractBuff->type);
-									abstractBuff->node = acapAddBuffNode(currentGraph, 
-											abstractBuff->size, 
-											abstractBuff->name, 
+									abstractBuff->node = acapAddBuffNode(currentGraph,
+											abstractBuff->size,
+											abstractBuff->name,
 											abstractBuff->type);
 									buffElement = buffElement->tail;
 								}
 								Element_t* linkElement = graph->linkHead;
 								while(linkElement != NULL){
 									AbstractLink_t *abstractLink =
-										(AbstractLink_t *) linkElement->node;	
+										(AbstractLink_t *) linkElement->node;
 									if(abstractLink->type){
-										abstractLink->node = acapAddOutputBuffer(currentGraph, 
-												abstractLink->accelNode->node, 
-												abstractLink->buffNode->node, 
-												abstractLink->offset, 
-												abstractLink->transactionSize, 
-												abstractLink->transactionIndex, 
+										abstractLink->node = acapAddOutputBuffer(currentGraph,
+												abstractLink->accelNode->node,
+												abstractLink->buffNode->node,
+												abstractLink->offset,
+												abstractLink->transactionSize,
+												abstractLink->transactionIndex,
 												abstractLink->channel);
-									}	
+									}
 									else{
-										abstractLink->node = acapAddInputBuffer(currentGraph, 
-												abstractLink->accelNode->node, 
-												abstractLink->buffNode->node, 
-												abstractLink->offset, 
-												abstractLink->transactionSize, 
-												abstractLink->transactionIndex, 
+										abstractLink->node = acapAddInputBuffer(currentGraph,
+												abstractLink->accelNode->node,
+												abstractLink->buffNode->node,
+												abstractLink->offset,
+												abstractLink->transactionSize,
+												abstractLink->transactionIndex,
 												abstractLink->channel);
 									}
 									linkElement = linkElement->tail;
@@ -204,7 +204,7 @@ void *jobScheduler_Task(void* carg){
 							case AGRAPH_INIT:
 								break;
 						}
-						graphElement = graphElement->tail;				
+						graphElement = graphElement->tail;
 					}
 				}
 				else{
@@ -219,7 +219,7 @@ void *jobScheduler_Task(void* carg){
 
 JobScheduler_t * jobSchedulerInit(){
 	JobScheduler_t *scheduler = malloc(sizeof(JobScheduler_t));
-	dfx_init();
+	dfx_init("/etc/dfx-mgrd/daemon.conf");
 	scheduler->graphList = NULL;
 
 	scheduler->CommandQueue  = malloc(sizeof(queue_t));
